@@ -278,13 +278,35 @@ export default {
       // set up a new date object to the beginning of the current 'page'
       let dObj = new Date(d.getFullYear(), 0, d.getDate(), d.getHours(), d.getMinutes())
       for (let i = 0; i < 12; i++) {
+        let days = []
+        const daysInMonth = DateUtils.daysInMonth(dObj.getFullYear(), i)
+
+        for (let i = 0; i < daysInMonth; i++) {
+          days.push({
+            date: dObj.getDate(),
+            timestamp: dObj.getTime(),
+            isSelected: this.isSelectedDate(dObj),
+            isDisabled: this.isDisabledDate(dObj),
+            isHighlighted: this.isHighlightedDate(dObj),
+            isHighlightStart: this.isHighlightStart(dObj),
+            isHighlightEnd: this.isHighlightEnd(dObj),
+            isToday: dObj.toDateString() === (new Date()).toDateString(),
+            isWeekend: dObj.getDay() === 0 || dObj.getDay() === 6,
+            isSaturday: dObj.getDay() === 6,
+            isSunday: dObj.getDay() === 0
+          })
+          dObj.setDate(dObj.getDate() + 1)
+        }
+
         months.push({
           month: DateUtils.getMonthName(i, this.translation.months.original),
           timestamp: dObj.getTime(),
           isSelected: this.isSelectedMonth(dObj),
-          isDisabled: this.isDisabledMonth(dObj)
+          isDisabled: this.isDisabledMonth(dObj),
+          days: days
         })
         dObj.setMonth(dObj.getMonth() + 1)
+        dObj.setDate(1)
       }
       return months
     },
